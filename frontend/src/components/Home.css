@@ -1,0 +1,193 @@
+/* Estilos generales */
+.home-container {
+  scroll-behavior: smooth;
+}
+
+/* Sección SICHF - Animación principal */
+.minimal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #e6e6fa 0%, #b0c4de 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.sichf-animation {
+  font-size: 15vw;
+  font-weight: 900;
+  color: #6a5acd;
+  letter-spacing: -0.05em;
+  display: flex;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+  perspective: 1000px;
+}
+
+.sichf-letter {
+  position: relative;
+  display: inline-block;
+  transform-origin: center bottom;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0;
+  transform: translateY(20px) rotateX(-90deg);
+}
+
+.sichf-letter.animate {
+  opacity: 1;
+  transform: translateY(0) rotateX(0);
+  animation: float 3.5s infinite ease-in-out;
+}
+
+.sichf-letter.animate:nth-child(1) { 
+  animation-delay: 0.1s;
+  transition-delay: 0.1s;
+}
+.sichf-letter.animate:nth-child(2) { 
+  animation-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+.sichf-letter.animate:nth-child(3) { 
+  animation-delay: 0.3s;
+  transition-delay: 0.3s;
+}
+.sichf-letter.animate:nth-child(4) { 
+  animation-delay: 0.4s;
+  transition-delay: 0.4s;
+}
+.sichf-letter.animate:nth-child(5) { 
+  animation-delay: 0.5s;
+  transition-delay: 0.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotateX(0) scale(1);
+    color: #6a5acd;
+  }
+  25% {
+    transform: translateY(-15px) rotateX(5deg) scale(1.05);
+    color: #9370db;
+  }
+  50% {
+    transform: translateY(0) rotateX(0) scale(1);
+    color: #6a5acd;
+  }
+  75% {
+    transform: translateY(10px) rotateX(-5deg) scale(0.98);
+    color: #8470db;
+  }
+}
+
+.sichf-letter:hover {
+  text-shadow: 3px 3px 6px rgba(106, 90, 205, 0.3);
+  transform: scale(1.05) rotateX(5deg);
+  color: #9370db;
+}
+
+/* Sección Happy Feets */
+.happy-feets-section {
+  width: 100%;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 100%);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.happy-feets-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.happy-feets-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+  text-align: center;
+  gap: 2rem;
+}
+
+.shoe-logo {
+  font-size: 8rem;
+  color: #6a5acd;
+  animation: pulse 2s infinite ease-in-out;
+  filter: drop-shadow(0 4px 6px rgba(106, 90, 205, 0.2));
+}
+
+.shoe-icon {
+  transform: rotate(-20deg);
+}
+
+.happy-feets-text h2 {
+  font-size: 2.5rem;
+  color: #483d8b;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.happy-feets-text p {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1) rotate(-20deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) rotate(-15deg);
+    opacity: 0.9;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sichf-animation {
+    font-size: 20vw;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .sichf-letter {
+    margin: 0 2px;
+  }
+  
+  .happy-feets-section {
+    padding: 3rem 1.5rem;
+  }
+  
+  .shoe-logo {
+    font-size: 6rem;
+  }
+  
+  .happy-feets-text h2 {
+    font-size: 2rem;
+  }
+  
+  .happy-feets-text p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .shoe-logo {
+    font-size: 5rem;
+  }
+  
+  .happy-feets-text h2 {
+    font-size: 1.8rem;
+  }
+}
