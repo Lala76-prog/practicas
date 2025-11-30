@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Probar POST info_calzado</title>
+</head>
+<body>
+  <h2>Formulario para enviar datos a /api/info_calzado</h2>
+
+  <form id="formulario">
+    <label for="material">Material:</label>
+    <input type="text" id="material" name="material" value="cuero" required><br><br>
+
+    <label for="talla">Talla:</label>
+    <input type="number" id="talla" name="talla" value="38" required><br><br>
+
+    <label for="color">Color:</label>
+    <input type="text" id="color" name="color" value="rojo" required><br><br>
+
+    <label for="descripcion">Descripción:</label>
+    <input type="text" id="descripcion" name="descripcion" value="Zapato de cuero rojo" required><br><br>
+
+    <label for="precio_unitario">Precio Unitario:</label>
+    <input type="number" id="precio_unitario" name="precio_unitario" value="120" required><br><br>
+
+    <label for="id_calzados">ID del Calzado:</label>
+    <input type="number" id="id_calzados" name="id_calzados" value="1" required><br><br>
+
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" id="cantidad" name="cantidad" value="10" required><br><br>
+
+    <button type="submit">Enviar POST</button>
+  </form>
+
+  <script>
+    document.getElementById('formulario').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const material = document.getElementById('material').value;
+      const talla = parseInt(document.getElementById('talla').value);
+      const color = document.getElementById('color').value;
+      const descripcion = document.getElementById('descripcion').value;
+      const precio_unitario = parseFloat(document.getElementById('precio_unitario').value);
+      const id_calzados = parseInt(document.getElementById('id_calzados').value);
+      const cantidad = parseInt(document.getElementById('cantidad').value);
+
+      try {
+        const response = await fetch('http://localhost:3001/api/info_calzado', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            material,
+            talla,
+            color,
+            descripcion,
+            precio_unitario,
+            id_calzados,
+            cantidad
+          })
+        });
+
+        const data = await response.json();
+        console.log('Respuesta del servidor:', data);
+        alert(JSON.stringify(data));
+      } catch (error) {
+        console.error('Error al hacer POST:', error);
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
