@@ -8,8 +8,8 @@ import {
   Card, CardBody, CardHeader, Badge
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faPlus, faEdit, faTrash, faImage, 
+import {
+  faPlus, faEdit, faTrash, faImage,
   faSave, faTimes, faExclamationTriangle,
   faCheck, faArrowLeft, faSearch, faShoePrints,
   faInfoCircle
@@ -41,21 +41,21 @@ function App() {
   const obtenerDatosIniciales = async () => {
     try {
       // Obtener proveedores
-      const proveedoresRes = await axios.get('http://localhost:3001/api/proveedor');
+      const proveedoresRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/proveedor`);
       setProveedores(proveedoresRes.data);
-      
+
       // Obtener categorías
-      const categoriasRes = await axios.get('http://localhost:3001/api/categoria');
+      const categoriasRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/categoria`);
       setCategorias(categoriasRes.data);
-      
+
       // Obtener calzados
-      const calzadosRes = await axios.get('http://localhost:3001/api/calzado');
-      
+      const calzadosRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/calzado`);
+
       // Mejorar los datos de calzados incluyendo nombres de categoría y proveedor
       const calzadosMejorados = calzadosRes.data.map(calzado => {
         const categoria = categoriasRes.data.find(cat => cat.id_categoria === calzado.id_categoria);
         const proveedor = proveedoresRes.data.find(prov => prov.id_proveedor === calzado.id_proveedor);
-        
+
         return {
           ...calzado,
           categoria_nombre: categoria ? categoria.nombre_categoria : 'Sin categoría',
@@ -64,7 +64,7 @@ function App() {
           proveedor_info: proveedor
         };
       });
-      
+
       setData(calzadosMejorados);
     } catch (err) {
       console.error('Error al obtener datos:', err);
@@ -102,12 +102,12 @@ function App() {
   // Obtener URL de la imagen
   const getImageUrl = (image) => {
     if (!image) return null;
-    
+
     if (image instanceof File) {
       return URL.createObjectURL(image);
     }
-    
-    return `http://localhost:3001/uploads/${image}`;
+
+    return `${process.env.REACT_APP_API_URL}/uploads/${image}`;
   };
 
   // Validar campos requeridos
@@ -116,22 +116,22 @@ function App() {
       mostrarAlerta('warning', 'El nombre del calzado es requerido');
       return false;
     }
-    
+
     if (!calzadoSeleccionado.id_proveedor) {
       mostrarAlerta('warning', 'Debe seleccionar un proveedor');
       return false;
     }
-    
+
     if (!calzadoSeleccionado.id_categoria) {
       mostrarAlerta('warning', 'Debe seleccionar una categoría');
       return false;
     }
-    
+
     if (!calzadoSeleccionado.cantidad || isNaN(calzadoSeleccionado.cantidad)) {
       mostrarAlerta('warning', 'La cantidad debe ser un número válido');
       return false;
     }
-    
+
     return true;
   };
 
@@ -152,17 +152,17 @@ function App() {
       formData.append('id_categoria', calzadoSeleccionado.id_categoria);
       formData.append('id_proveedor', calzadoSeleccionado.id_proveedor);
       formData.append('cantidad', calzadoSeleccionado.cantidad);
-      
+
       if (calzadoSeleccionado.imagen) {
         formData.append('imagen', calzadoSeleccionado.imagen);
       }
 
-      await axios.post('http://localhost:3001/api/calzado', formData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/calzado`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
+
       obtenerDatosIniciales();
       setModalInsertar(false);
       setCalzadoSeleccionado({
@@ -193,7 +193,7 @@ function App() {
       formData.append('id_categoria', calzadoSeleccionado.id_categoria);
       formData.append('id_proveedor', calzadoSeleccionado.id_proveedor);
       formData.append('cantidad', calzadoSeleccionado.cantidad);
-      
+
       if (calzadoSeleccionado.imagen instanceof File) {
         formData.append('imagen', calzadoSeleccionado.imagen);
       } else if (calzadoSeleccionado.imagen === null) {
@@ -201,7 +201,7 @@ function App() {
       }
 
       await axios.put(
-        `http://localhost:3001/api/calzado/${calzadoSeleccionado.id_calzado}`,
+        `${process.env.REACT_APP_API_URL}/api/calzado/${calzadoSeleccionado.id_calzado}`,
         formData,
         {
           headers: {
@@ -209,7 +209,7 @@ function App() {
           }
         }
       );
-      
+
       obtenerDatosIniciales();
       setModalEditar(false);
       mostrarAlerta('success', 'Calzado actualizado correctamente');
@@ -222,7 +222,7 @@ function App() {
   // Eliminar calzado
   const eliminar = async () => {
     try {
-      await axios.delete(`http://localhost:3001/api/calzado/${calzadoSeleccionado.id_calzado}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/calzado/${calzadoSeleccionado.id_calzado}`);
       obtenerDatosIniciales();
       setModalEliminar(false);
       mostrarAlerta('success', 'Calzado eliminado correctamente');
@@ -239,7 +239,7 @@ function App() {
       imagen: calzado.imagen ? calzado.imagen : null,
       imagenNombre: calzado.imagen ? calzado.imagen.split('/').pop() : ''
     });
-    
+
     if (tipo === 'Editar') setModalEditar(true);
     else if (tipo === 'Eliminar') setModalEliminar(true);
   };
@@ -291,13 +291,13 @@ function App() {
         <Card className="mb-4 shadow-sm">
           <CardBody>
             <div className="d-flex justify-content-between align-items-center flex-wrap">
-              <button 
-                className="btn btn-success mb-2 mb-md-0" 
+              <button
+                className="btn btn-success mb-2 mb-md-0"
                 onClick={() => setModalInsertar(true)}
               >
                 <FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Calzado
               </button>
-              
+
               <div className="search-box" style={{ width: '400px', maxWidth: '100%' }}>
                 <div className="input-group">
                   <span className="input-group-text bg-white">
@@ -341,9 +341,9 @@ function App() {
                     <tr key={c.id_calzado}>
                       <td>{c.id_calzado}</td>
                       <td>
-                        <Badge 
+                        <Badge
                           color={
-                            c.estado === 'Disponible' ? 'success' : 
+                            c.estado === 'Disponible' ? 'success' :
                             c.estado === 'Agotado' ? 'warning' : 'secondary'
                           }
                           pill
@@ -358,9 +358,9 @@ function App() {
                         <div className="d-flex align-items-center">
                           <span>{c.proveedor_nombre}</span>
                           {c.proveedor_info && (
-                            <Button 
-                              color="link" 
-                              size="sm" 
+                            <Button
+                              color="link"
+                              size="sm"
                               className="text-info p-0 ms-2"
                               onClick={() => mostrarInfoProveedorHandler(c.proveedor_info)}
                               title="Ver info del proveedor"
@@ -377,7 +377,7 @@ function App() {
                       </td>
                       <td>
                         {c.imagen ? (
-                          <img 
+                          <img
                             src={getImageUrl(c.imagen)}
                             alt={c.nombre}
                             className="img-thumbnail rounded"
@@ -389,7 +389,7 @@ function App() {
                             }}
                           />
                         ) : (
-                          <div className="no-image-placeholder bg-light rounded d-flex align-items-center justify-content-center" 
+                          <div className="no-image-placeholder bg-light rounded d-flex align-items-center justify-content-center"
                                style={{ width: '60px', height: '60px' }}>
                             <FontAwesomeIcon icon={faImage} size="lg" className="text-muted" />
                           </div>
@@ -397,15 +397,15 @@ function App() {
                       </td>
                       <td>
                         <div className="d-flex gap-2">
-                          <button 
-                            className="btn btn-outline-warning btn-sm" 
+                          <button
+                            className="btn btn-outline-warning btn-sm"
                             onClick={() => seleccionarCalzado(c, 'Editar')}
                             title="Editar"
                           >
                             <FontAwesomeIcon icon={faEdit} />
                           </button>
-                          <button 
-                            className="btn btn-outline-danger btn-sm" 
+                          <button
+                            className="btn btn-outline-danger btn-sm"
                             onClick={() => seleccionarCalzado(c, 'Eliminar')}
                             title="Eliminar"
                           >
@@ -442,22 +442,22 @@ function App() {
               <div className="col-md-6">
                 <FormGroup>
                   <Label>Nombre*</Label>
-                  <Input 
-                    type="text" 
-                    name="nombre" 
+                  <Input
+                    type="text"
+                    name="nombre"
                     value={calzadoSeleccionado.nombre}
-                    onChange={handleChange} 
-                    required 
+                    onChange={handleChange}
+                    required
                     placeholder="Ej. Zapatos deportivos"
                     className="mb-3"
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Categoría*</Label>
-                  <Input 
-                    type="select" 
-                    name="id_categoria" 
+                  <Input
+                    type="select"
+                    name="id_categoria"
                     value={calzadoSeleccionado.id_categoria}
                     onChange={handleChange}
                     required
@@ -471,12 +471,12 @@ function App() {
                     ))}
                   </Input>
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Proveedor*</Label>
-                  <Input 
-                    type="select" 
-                    name="id_proveedor" 
+                  <Input
+                    type="select"
+                    name="id_proveedor"
                     value={calzadoSeleccionado.id_proveedor}
                     onChange={handleChange}
                     required
@@ -491,13 +491,13 @@ function App() {
                   </Input>
                 </FormGroup>
               </div>
-              
+
               <div className="col-md-6">
                 <FormGroup>
                   <Label>Estado*</Label>
-                  <Input 
-                    type="select" 
-                    name="estado" 
+                  <Input
+                    type="select"
+                    name="estado"
                     value={calzadoSeleccionado.estado}
                     onChange={handleChange}
                     required
@@ -508,28 +508,28 @@ function App() {
                     <option value="Descontinuado">Descontinuado</option>
                   </Input>
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Cantidad*</Label>
-                  <Input 
-                    type="number" 
-                    name="cantidad" 
+                  <Input
+                    type="number"
+                    name="cantidad"
                     value={calzadoSeleccionado.cantidad}
-                    onChange={handleChange} 
+                    onChange={handleChange}
                     min="0"
-                    required 
+                    required
                     placeholder="Ej. 50"
                     className="mb-3"
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Imagen</Label>
                   <div className="border rounded p-3">
-                    <Input 
-                      type="file" 
-                      name="imagen" 
-                      onChange={handleImageChange} 
+                    <Input
+                      type="file"
+                      name="imagen"
+                      onChange={handleImageChange}
                       accept="image/*"
                       className="mb-2"
                     />
@@ -578,22 +578,22 @@ function App() {
               <div className="col-md-6">
                 <FormGroup>
                   <Label>Nombre*</Label>
-                  <Input 
-                    type="text" 
-                    name="nombre" 
-                    value={calzadoSeleccionado.nombre || ''} 
-                    onChange={handleChange} 
-                    required 
+                  <Input
+                    type="text"
+                    name="nombre"
+                    value={calzadoSeleccionado.nombre || ''}
+                    onChange={handleChange}
+                    required
                     className="mb-3"
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Categoría*</Label>
-                  <Input 
-                    type="select" 
-                    name="id_categoria" 
-                    value={calzadoSeleccionado.id_categoria || ''} 
+                  <Input
+                    type="select"
+                    name="id_categoria"
+                    value={calzadoSeleccionado.id_categoria || ''}
                     onChange={handleChange}
                     required
                     className="mb-3"
@@ -606,13 +606,13 @@ function App() {
                     ))}
                   </Input>
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Proveedor*</Label>
-                  <Input 
-                    type="select" 
-                    name="id_proveedor" 
-                    value={calzadoSeleccionado.id_proveedor || ''} 
+                  <Input
+                    type="select"
+                    name="id_proveedor"
+                    value={calzadoSeleccionado.id_proveedor || ''}
                     onChange={handleChange}
                     required
                     className="mb-3"
@@ -626,14 +626,14 @@ function App() {
                   </Input>
                 </FormGroup>
               </div>
-              
+
               <div className="col-md-6">
                 <FormGroup>
                   <Label>Estado*</Label>
-                  <Input 
-                    type="select" 
-                    name="estado" 
-                    value={calzadoSeleccionado.estado || 'Disponible'} 
+                  <Input
+                    type="select"
+                    name="estado"
+                    value={calzadoSeleccionado.estado || 'Disponible'}
                     onChange={handleChange}
                     required
                     className="mb-3"
@@ -643,35 +643,35 @@ function App() {
                     <option value="Descontinuado">Descontinuado</option>
                   </Input>
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Cantidad*</Label>
-                  <Input 
-                    type="number" 
-                    name="cantidad" 
-                    value={calzadoSeleccionado.cantidad || ''} 
-                    onChange={handleChange} 
+                  <Input
+                    type="number"
+                    name="cantidad"
+                    value={calzadoSeleccionado.cantidad || ''}
+                    onChange={handleChange}
                     min="0"
-                    required 
+                    required
                     className="mb-3"
                   />
                 </FormGroup>
-                
+
                 <FormGroup>
                   <Label>Imagen</Label>
                   <div className="border rounded p-3">
-                    <Input 
-                      type="file" 
-                      name="imagen" 
-                      onChange={handleImageChange} 
+                    <Input
+                      type="file"
+                      name="imagen"
+                      onChange={handleImageChange}
                       accept="image/*"
                       className="mb-3"
                     />
-                    
+
                     <div className="d-flex align-items-center">
                       {calzadoSeleccionado.imagen ? (
                         <>
-                          <img 
+                          <img
                             src={getImageUrl(calzadoSeleccionado.imagen)}
                             alt="Actual"
                             className="img-thumbnail me-3"
@@ -684,17 +684,17 @@ function App() {
                           />
                           <div>
                             <p className="mb-1 small">
-                              {calzadoSeleccionado.imagen instanceof File ? 
-                                calzadoSeleccionado.imagenNombre : 
+                              {calzadoSeleccionado.imagen instanceof File ?
+                                calzadoSeleccionado.imagenNombre :
                                 calzadoSeleccionado.imagen.split('/').pop()}
                             </p>
-                            <Button 
-                              color="danger" 
-                              size="sm" 
-                              onClick={() => setCalzadoSeleccionado(prev => ({ 
-                                ...prev, 
-                                imagen: null, 
-                                imagenNombre: '' 
+                            <Button
+                              color="danger"
+                              size="sm"
+                              onClick={() => setCalzadoSeleccionado(prev => ({
+                                ...prev,
+                                imagen: null,
+                                imagenNombre: ''
                               }))}
                             >
                               <FontAwesomeIcon icon={faTrash} className="me-1" /> Eliminar
@@ -783,4 +783,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

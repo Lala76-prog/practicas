@@ -38,7 +38,7 @@ function App() {
 
   const obtenerProveedores = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/proveedor');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/proveedor`);
       setData(res.data);
     } catch (err) {
       console.error('Error al obtener proveedores:', err);
@@ -70,8 +70,8 @@ function App() {
     try {
       // Calcular total automáticamente
       const total = proveedorSeleccionado.valor_unitario * proveedorSeleccionado.cantidad;
-      
-      await axios.put(`http://localhost:3001/api/proveedor/${proveedorSeleccionado.id_proveedor}`, {
+
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/proveedor/${proveedorSeleccionado.id_proveedor}`, {
         ...proveedorSeleccionado,
         total: total
       });
@@ -84,7 +84,7 @@ function App() {
 
   const eliminar = async () => {
     try {
-      await axios.delete(`http://localhost:3001/api/proveedor/${proveedorSeleccionado.id_proveedor}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/proveedor/${proveedorSeleccionado.id_proveedor}`);
       obtenerProveedores();
       setModalEliminar(false);
     } catch (err) {
@@ -96,8 +96,8 @@ function App() {
     try {
       // Calcular total automáticamente
       const total = nuevoProveedor.valor_unitario * nuevoProveedor.cantidad;
-      
-      await axios.post('http://localhost:3001/api/proveedor', {
+
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/proveedor`, {
         ...nuevoProveedor,
         total: total
       });
@@ -163,7 +163,7 @@ function App() {
           value={busqueda}
           onChange={handleBusqueda}
         />
-        <button 
+        <button
           className="btn btn-primary mt-2"
           onClick={() => setModalAgregar(true)}
         >
@@ -204,15 +204,15 @@ function App() {
                 <td>{p.metodo_pago || '-'}</td>
                 <td>{formatearFecha(p.fecha_ultima_compra)}</td>
                 <td>
-                  <button 
-                    className="btn btn-warning btn-sm mr-2" 
+                  <button
+                    className="btn btn-warning btn-sm mr-2"
                     onClick={() => seleccionarProveedor(p, 'Editar')}
                     title="Editar proveedor"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
-                  <button 
-                    className="btn btn-danger btn-sm" 
+                  <button
+                    className="btn btn-danger btn-sm"
                     onClick={() => seleccionarProveedor(p, 'Eliminar')}
                     title="Eliminar proveedor"
                   >

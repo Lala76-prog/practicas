@@ -7,7 +7,7 @@ import "./Admin.css";
 
 Chart.register(...registerables);
 
-const API_BASE_URL = "http://localhost:3001/api";
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api`;
 
 const API_ENDPOINTS = {
   usuarios: `${API_BASE_URL}/usuarios`,
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const token = localStorage.getItem("token");
         if (!token) {
           navigate("/login");
@@ -90,10 +90,10 @@ const AdminDashboard = () => {
         }
 
         const [
-          usersData, 
-          shoesData, 
-          suppliersData, 
-          categoriesData, 
+          usersData,
+          shoesData,
+          suppliersData,
+          categoriesData,
           salesData,
           rolesData
         ] = await Promise.all([
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
     });
 
     const sortedSuppliers = [...suppliersWithQuantity].sort((a, b) => b.totalQuantity - a.totalQuantity);
-    
+
     return {
       labels: sortedSuppliers.map(supplier => supplier.nombre_proveedor),
       datasets: [{
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
     datasets: [
       {
         label: "Productos por Categoría",
-        data: data.categories.map(category => 
+        data: data.categories.map(category =>
           data.shoes.filter(shoe => shoe.id_categoria === category.id_categoria).length
         ),
         backgroundColor: ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"],
@@ -209,35 +209,35 @@ const AdminDashboard = () => {
           <h3>Sichf Admin</h3>
         </div>
         <nav className="sidebar-nav">
-          <button 
+          <button
             className={`nav-item ${activeView === "dashboard" ? "active" : ""}`}
             onClick={() => setActiveView("dashboard")}
           >
             <FaChartBar className="nav-icon" />
             <span>Dashboard</span>
           </button>
-          <button 
+          <button
             className={`nav-item ${activeView === "usuarios" ? "active" : ""}`}
             onClick={() => setActiveView("usuarios")}
           >
             <FaUsers className="nav-icon" />
             <span>Usuarios</span>
           </button>
-          <button 
+          <button
             className={`nav-item ${activeView === "calzado" ? "active" : ""}`}
             onClick={() => setActiveView("calzado")}
           >
             <FaShoePrints className="nav-icon" />
             <span>Calzado</span>
           </button>
-          <button 
+          <button
             className={`nav-item ${activeView === "proveedor" ? "active" : ""}`}
             onClick={() => setActiveView("proveedor")}
           >
             <FaBoxes className="nav-icon" />
             <span>Proveedores</span>
           </button>
-          <button 
+          <button
             className={`nav-item ${activeView === "categoria" ? "active" : ""}`}
             onClick={() => setActiveView("categoria")}
           >
@@ -284,7 +284,7 @@ const AdminDashboard = () => {
               <button onClick={() => window.location.reload()}>Recargar</button>
             </div>
           )}
-          
+
           {loading ? (
             <div className="loading">
               <div className="spinner"></div>
@@ -318,7 +318,7 @@ const AdminDashboard = () => {
                     <div className="chart-card">
                       <h3>Disponibilidad de Calzado (Top 10)</h3>
                       <div className="chart-wrapper">
-                        <Bar 
+                        <Bar
                           data={shoesChartData}
                           options={{
                             indexAxis: 'y',
@@ -366,7 +366,7 @@ const AdminDashboard = () => {
                 <div className="table-view">
                   <h2>Inventario de Calzado</h2>
                   <div className="chart-wrapper">
-                    <Bar 
+                    <Bar
                       data={shoesChartData}
                       options={{
                         indexAxis: 'y',
@@ -404,7 +404,7 @@ const AdminDashboard = () => {
                 <div className="table-view">
                   <h2>Proveedores</h2>
                   <div className="chart-wrapper">
-                    <Bar 
+                    <Bar
                       data={getSupplierQuantityData()}
                       options={{
                         indexAxis: 'y',
@@ -440,7 +440,7 @@ const AdminDashboard = () => {
                 <div className="table-view">
                   <h2>Categorías</h2>
                   <div className="chart-wrapper">
-                    <Pie 
+                    <Pie
                       data={categoriesChartData}
                       options={{
                         plugins: {

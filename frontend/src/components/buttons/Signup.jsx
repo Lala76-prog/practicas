@@ -33,7 +33,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-    
+
     if (!form.checkValidity()) {
       e.stopPropagation();
       setValidated(true);
@@ -41,9 +41,9 @@ const Signup = () => {
     }
 
     setLoading(true);
-    
+
     try {
-      const response = await fetch('http://localhost:3001/api/registro', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/registro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,8 +88,8 @@ const Signup = () => {
 
   return (
     <>
-      <Button 
-        variant="outline-primary" 
+      <Button
+        variant="outline-primary"
         onClick={() => {
           setShowModal(true);
           setValidated(false);
@@ -101,8 +101,8 @@ const Signup = () => {
         <span>Registro</span>
       </Button>
 
-      <Modal 
-        show={showModal} 
+      <Modal
+        show={showModal}
         onHide={() => {
           setShowModal(false);
           setAlert(null);
@@ -116,13 +116,13 @@ const Signup = () => {
             <p className="text-muted small">Completa el formulario para registrarte</p>
           </Modal.Title>
         </Modal.Header>
-        
+
         <Modal.Body className="pt-0">
           {alert && (
-            <Alert 
-              variant={alert.type} 
+            <Alert
+              variant={alert.type}
               className="d-flex align-items-center"
-              onClose={() => setAlert(null)} 
+              onClose={() => setAlert(null)}
               dismissible
             >
               {alertIcons[alert.type]}
@@ -132,7 +132,7 @@ const Signup = () => {
               </div>
             </Alert>
           )}
-          
+
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <FloatingLabel controlId="floatingEmail" label="Correo Electrónico" className="mb-3">
               <Form.Control
@@ -150,7 +150,7 @@ const Signup = () => {
                 <FaEnvelope />
               </div>
             </FloatingLabel>
-            
+
             <FloatingLabel controlId="floatingPassword" label="Contraseña" className="mb-4">
               <Form.Control
                 type="password"
@@ -168,7 +168,7 @@ const Signup = () => {
                 <FaLock />
               </div>
             </FloatingLabel>
-            
+
             <Form.Group className="mb-4">
               <Form.Check
                 type="checkbox"
@@ -179,10 +179,10 @@ const Signup = () => {
                 onChange={handleInputChange}
               />
             </Form.Group>
-            
-            <Button 
-              type="submit" 
-              variant="primary" 
+
+            <Button
+              type="submit"
+              variant="primary"
               className="w-100 py-2 fw-bold"
               disabled={loading}
             >
@@ -200,12 +200,12 @@ const Signup = () => {
             </Button>
           </Form>
         </Modal.Body>
-        
+
         <Modal.Footer className="border-0 justify-content-center">
           <p className="small text-muted mb-0">
             ¿Ya tienes una cuenta?{' '}
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="text-primary text-decoration-none p-0"
               onClick={() => {
                 setShowModal(false);

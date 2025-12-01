@@ -26,18 +26,18 @@ const Products = () => {
       try {
         setLoading(true);
         setError(null);
-        
-        const response = await axios.get('http://localhost:3001/api/info_calzado');
-        
+
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/info_calzado`);
+
         if (!response.data.success) {
           throw new Error(response.data.error || 'Error al obtener productos');
         }
-        
+
         // Normalizar las categorías de los productos
         const normalizedProducts = response.data.data.map(product => {
           // Asegurarnos de que la categoría esté en minúsculas y sea una de las permitidas
           let categoria = product.categoria?.toLowerCase() || 'otros';
-          
+
           // Mapear categorías similares a las principales
           if (categoria.includes('hombre') || categoria.includes('caballero')) {
             categoria = 'hombre';
@@ -46,20 +46,20 @@ const Products = () => {
           } else if (categoria.includes('niño') || categoria.includes('niña') || categoria.includes('infantil')) {
             categoria = 'niño';
           }
-          
+
           // Si no coincide con ninguna categoría principal, usar 'otros'
           if (!['hombre', 'mujer', 'niño'].includes(categoria)) {
             categoria = 'otros';
           }
-          
-          return { 
-            ...product, 
+
+          return {
+            ...product,
             categoria,
             // Asegurar que la descripción no sea null
             descripcion: product.descripcion || `${product.nombre || 'Producto'} - ${product.color || ''} - Talla ${product.talla || ''}`.trim()
           };
         });
-        
+
         setProducts(normalizedProducts);
         setFilteredProducts(normalizedProducts);
       } catch (err) {
@@ -75,12 +75,12 @@ const Products = () => {
 
   useEffect(() => {
     let result = products;
-    
+
     // Filtrar por categoría
     if (activeCategory !== 'todos') {
       result = result.filter(product => product.categoria === activeCategory);
     }
-    
+
     // Filtrar por término de búsqueda
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -91,7 +91,7 @@ const Products = () => {
         (product.color && product.color.toLowerCase().includes(term))
       );
     }
-    
+
     setFilteredProducts(result);
   }, [activeCategory, searchTerm, products]);
 
@@ -163,9 +163,9 @@ const Products = () => {
           {filteredProducts.map(product => (
             <Col key={product.id_info_calzado} md={4} lg={3}>
               <Card className="h-100 shadow">
-                <Card.Img 
-                  variant="top" 
-                  src={product.imagen || '/placeholder.jpg'} 
+                <Card.Img
+                  variant="top"
+                  src={product.imagen || '/placeholder.jpg'}
                   style={{ height: '200px', objectFit: 'cover' }}
                   onError={(e) => {
                     e.target.src = '/placeholder.jpg';
@@ -184,7 +184,7 @@ const Products = () => {
                     <h5 className="text-success mb-3">
                       {formatPrice(product.precio_unitario)}
                     </h5>
-                    <Button 
+                    <Button
                       variant="outline-primary"
                       as={Link}
                       to={`/products/${product.id_info_calzado}`}

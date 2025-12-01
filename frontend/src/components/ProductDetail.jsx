@@ -110,7 +110,7 @@ const ProductDetail = () => {
       };
 
       const response = await axios.post(
-        'http://localhost:3001/api/carrito',
+        `${process.env.REACT_APP_API_URL}/api/carrito`,
         cartItem,
         {
           headers: {
@@ -128,7 +128,7 @@ const ProductDetail = () => {
       }
     } catch (err) {
       console.error('Error al agregar al carrito:', err);
-      
+
       let errorMessage = "Error al agregar al carrito";
       if (err.response) {
         if (err.response.status === 401) {
@@ -139,7 +139,7 @@ const ProductDetail = () => {
       } else if (err.message) {
         errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -152,8 +152,8 @@ const ProductDetail = () => {
         <Alert variant="danger" className="mb-4">
           Producto no encontrado
         </Alert>
-        <Button 
-          variant="primary" 
+        <Button
+          variant="primary"
           onClick={() => navigate('/')}
           size="lg"
         >
@@ -167,9 +167,9 @@ const ProductDetail = () => {
 
   return (
     <div className="container py-5">
-      <Button 
-        variant="outline-secondary" 
-        onClick={() => navigate(-1)} 
+      <Button
+        variant="outline-secondary"
+        onClick={() => navigate(-1)}
         className="mb-4"
         size="sm"
       >
@@ -182,7 +182,7 @@ const ProductDetail = () => {
           {error}
         </Alert>
       )}
-      
+
       {success && (
         <Alert variant="success" onClose={() => setSuccess(null)} dismissible className="mb-4">
           <i className="fas fa-check-circle me-2"></i>
@@ -193,12 +193,12 @@ const ProductDetail = () => {
       <Row className="g-4">
         <Col lg={6}>
           <Card className="h-100 border-0 shadow-sm">
-            <Card.Img 
-              variant="top" 
-              src={product.imagen || '/placeholder.jpg'} 
+            <Card.Img
+              variant="top"
+              src={product.imagen || '/placeholder.jpg'}
               className="p-3"
-              style={{ 
-                maxHeight: '500px', 
+              style={{
+                maxHeight: '500px',
                 objectFit: 'contain',
                 backgroundColor: '#f8f9fa'
               }}
@@ -207,14 +207,14 @@ const ProductDetail = () => {
             />
           </Card>
         </Col>
-        
+
         <Col lg={6}>
           <Card className="h-100 border-0 shadow-sm">
             <Card.Body className="p-4">
               <Card.Title as="h1" className="mb-3 fw-bold">
                 {product.descripcion}
               </Card.Title>
-              
+
               <div className="mb-4">
                 {product.talla && (
                   <Badge bg="light" text="dark" className="me-2 border">
@@ -256,17 +256,17 @@ const ProductDetail = () => {
               <Form.Group className="mb-4">
                 <Form.Label className="fw-bold">Cantidad:</Form.Label>
                 <div className="d-flex align-items-center mb-2">
-                  <Button 
-                    variant="outline-secondary" 
+                  <Button
+                    variant="outline-secondary"
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
                     disabled={quantity <= 1 || loading}
                     className="px-3"
                   >
                     <i className="fas fa-minus"></i>
                   </Button>
-                  <Form.Control 
-                    type="number" 
-                    min="1" 
+                  <Form.Control
+                    type="number"
+                    min="1"
                     max={stockDisponible}
                     value={quantity}
                     onChange={(e) => {
@@ -277,8 +277,8 @@ const ProductDetail = () => {
                     style={{ width: '60px' }}
                     disabled={loading}
                   />
-                  <Button 
-                    variant="outline-secondary" 
+                  <Button
+                    variant="outline-secondary"
                     onClick={() => setQuantity(q => q + 1)}
                     disabled={loading || quantity >= stockDisponible}
                     className="px-3"
@@ -289,21 +289,21 @@ const ProductDetail = () => {
               </Form.Group>
 
               <div className="d-grid gap-2">
-                <Button 
-                  variant="primary" 
-                  size="lg" 
+                <Button
+                  variant="primary"
+                  size="lg"
                   className="py-3 fw-bold"
                   onClick={handleAddToCart}
                   disabled={loading || stockDisponible <= 0}
                 >
                   {loading ? (
                     <>
-                      <Spinner 
-                        as="span" 
-                        animation="border" 
-                        size="sm" 
-                        role="status" 
-                        aria-hidden="true" 
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
                         className="me-2"
                       />
                       Agregando...
