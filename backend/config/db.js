@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 
 const db = mysql.createPool({
-  host: 'localhost',
-  port: 3316,
-  user: 'root',
-  password: 'S1pp4$QL',
-  database: 'sichf'
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 module.exports = db;

@@ -25,7 +25,7 @@ function InfoCalzadoCrud() {
 
   const obtenerInfo = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/info_calzado');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/info_calzado`);
       setData(res.data.data);
     } catch (error) {
       console.error('Error al obtener info calzado:', error);
@@ -39,29 +39,29 @@ function InfoCalzadoCrud() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!infoSeleccionada.material?.trim()) newErrors.material = 'Material es requerido';
     if (!infoSeleccionada.talla) newErrors.talla = 'Talla es requerida';
     if (!infoSeleccionada.color?.trim()) newErrors.color = 'Color es requerido';
-    if (!infoSeleccionada.precio_unitario || infoSeleccionada.precio_unitario <= 0) 
+    if (!infoSeleccionada.precio_unitario || infoSeleccionada.precio_unitario <= 0)
       newErrors.precio_unitario = 'Precio unitario debe ser mayor a 0';
     if (!infoSeleccionada.id_calzados) newErrors.id_calzados = 'ID de calzado es requerido';
-    if (infoSeleccionada.cantidad < 0 || infoSeleccionada.cantidad === '') 
+    if (infoSeleccionada.cantidad < 0 || infoSeleccionada.cantidad === '')
       newErrors.cantidad = 'Cantidad no puede ser negativa';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setInfoSeleccionada(prev => ({ 
-      ...prev, 
+    setInfoSeleccionada(prev => ({
+      ...prev,
       [name]: name === 'precio_unitario' || name === 'cantidad' || name === 'talla' || name === 'id_calzados'
-        ? value === '' ? '' : Number(value) 
-        : value 
+        ? value === '' ? '' : Number(value)
+        : value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
@@ -87,11 +87,11 @@ function InfoCalzadoCrud() {
 
   const editar = async () => {
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       await axios.put(
-        `http://localhost:3001/api/info_calzado/${infoSeleccionada.id_info_calzado}`,
+        `${process.env.REACT_APP_API_URL}/api/info_calzado/${infoSeleccionada.id_info_calzado}`,
         infoSeleccionada
       );
       await obtenerInfo();
@@ -108,7 +108,7 @@ function InfoCalzadoCrud() {
     setIsSubmitting(true);
     try {
       await axios.delete(
-        `http://localhost:3001/api/info_calzado/${infoSeleccionada.id_info_calzado}`
+        `${process.env.REACT_APP_API_URL}/api/info_calzado/${infoSeleccionada.id_info_calzado}`
       );
       await obtenerInfo();
       setModalEliminar(false);
@@ -122,11 +122,11 @@ function InfoCalzadoCrud() {
 
   const insertar = async () => {
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       await axios.post(
-        'http://localhost:3001/api/info_calzado',
+        `${process.env.REACT_APP_API_URL}/api/info_calzado`,
         infoSeleccionada
       );
       await obtenerInfo();
@@ -171,16 +171,16 @@ function InfoCalzadoCrud() {
           />
         </div>
         <div className="col-md-4 text-end">
-          <button 
-            className="btn btn-primary" 
+          <button
+            className="btn btn-primary"
             onClick={() => {
               setInfoSeleccionada({
-                id_info_calzado: '', 
-                material: '', 
-                talla: '', 
+                id_info_calzado: '',
+                material: '',
+                talla: '',
                 color: '',
-                descripcion: '', 
-                precio_unitario: '', 
+                descripcion: '',
+                precio_unitario: '',
                 id_calzados: '',
                 cantidad: ''
               });
@@ -221,14 +221,14 @@ function InfoCalzadoCrud() {
                 <td>{info.cantidad_variante || info.cantidad}</td>
                 <td>
                   <div className="d-flex gap-2">
-                    <button 
-                      className="btn btn-sm btn-warning" 
+                    <button
+                      className="btn btn-sm btn-warning"
                       onClick={() => abrirModalEditar(info)}
                     >
                       Editar
                     </button>
-                    <button 
-                      className="btn btn-sm btn-danger" 
+                    <button
+                      className="btn btn-sm btn-danger"
                       onClick={() => abrirModalEliminar(info)}
                     >
                       Eliminar
@@ -367,16 +367,16 @@ function InfoCalzadoCrud() {
           <div className="text-muted">* Campos obligatorios</div>
         </ModalBody>
         <ModalFooter>
-          <button 
-            className="btn btn-primary" 
+          <button
+            className="btn btn-primary"
             onClick={infoSeleccionada.id_info_calzado ? editar : insertar}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Procesando...' : 
+            {isSubmitting ? 'Procesando...' :
               (infoSeleccionada.id_info_calzado ? 'Guardar Cambios' : 'Agregar')}
           </button>
-          <button 
-            className="btn btn-secondary" 
+          <button
+            className="btn btn-secondary"
             onClick={() => setModalEditar(false)}
             disabled={isSubmitting}
           >
@@ -401,15 +401,15 @@ function InfoCalzadoCrud() {
           Esta acción no se puede deshacer.
         </ModalBody>
         <ModalFooter>
-          <button 
-            className="btn btn-danger" 
+          <button
+            className="btn btn-danger"
             onClick={eliminar}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Eliminando...' : 'Confirmar Eliminación'}
           </button>
-          <button 
-            className="btn btn-secondary" 
+          <button
+            className="btn btn-secondary"
             onClick={() => setModalEliminar(false)}
             disabled={isSubmitting}
           >

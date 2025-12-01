@@ -45,7 +45,7 @@
       const cantidad = parseInt(document.getElementById('cantidad').value);
 
       try {
-        const response = await fetch('http://localhost:3001/api/info_calzado', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/info_calzado`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

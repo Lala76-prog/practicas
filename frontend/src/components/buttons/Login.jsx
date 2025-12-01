@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Alert, Spinner, Form, FloatingLabel, Dropdown, Badge } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { 
-  FaSignInAlt, 
-  FaEnvelope, 
-  FaLock, 
-  FaExclamationTriangle, 
-  FaCheckCircle, 
+import {
+  FaSignInAlt,
+  FaEnvelope,
+  FaLock,
+  FaExclamationTriangle,
+  FaCheckCircle,
   FaSignOutAlt,
   FaUserPlus,
   FaUserCircle,
@@ -15,6 +15,7 @@ import {
   FaUserShield
 } from "react-icons/fa";
 import CartBtn from './CartBtn';
+
 
 const Login = () => {
   // Estados del componente
@@ -28,7 +29,7 @@ const Login = () => {
   const [compras, setCompras] = useState([]);
   const [loadingCompras, setLoadingCompras] = useState(false);
   const [showCompras, setShowCompras] = useState(false);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -55,11 +56,11 @@ const Login = () => {
   // Obtener historial de compras
   const fetchCompras = async () => {
     if (!isAuthenticated) return;
-    
+
     setLoadingCompras(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3001/api/pagos", {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/pagos`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -69,7 +70,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error al obtener compras:", error);
       let errorMessage = "Error al cargar historial de compras";
-      
+
       if (error.response) {
         if (error.response.status === 401) {
           errorMessage = "Sesión expirada. Por favor, inicia sesión nuevamente";
@@ -82,7 +83,7 @@ const Login = () => {
       } else {
         errorMessage = "Error de conexión con el servidor";
       }
-      
+
       showAlert("danger", "Error", errorMessage);
       setCompras([]);
     } finally {
@@ -103,7 +104,7 @@ const Login = () => {
     const token = localStorage.getItem("token");
     const user = getStoredUser();
     const userIsAuthenticated = !!token;
-    
+
     setIsAuthenticated(userIsAuthenticated);
     setUserRole(user?.role || null);
 
@@ -113,12 +114,12 @@ const Login = () => {
         const redirectPath = user?.role === 'admin' ? '/admin' : '/products';
         navigate(redirectPath);
       }
-      
+
       if (user?.role === 'admin' && window.location.pathname === "/products") {
         navigate('/admin');
       }
     }
-    
+
     // Mostrar modal si intenta acceder a rutas protegidas sin autenticación
     if (!userIsAuthenticated && (window.location.pathname === "/products" || window.location.pathname === "/admin")) {
       setShowModal(true);
@@ -129,7 +130,7 @@ const Login = () => {
       );
       navigate("/");
     }
-    
+
     // Manejar redirección desde rutas protegidas
     if (location.state?.fromProtected) {
       setShowModal(true);
@@ -151,7 +152,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-    
+
     if (!form.checkValidity()) {
       e.stopPropagation();
       setValidated(true);
@@ -159,22 +160,22 @@ const Login = () => {
     }
 
     setLoading(true);
-    
+
     try {
-      const response = await axios.post("http://localhost:3001/api/login", formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, formData, {
         timeout: 5000,
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
+
       // Guardar token y usuario
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      
+
       setIsAuthenticated(true);
       setUserRole(response.data.user.role);
-      
+
       showAlert(
         "success",
         "¡Bienvenido!",
@@ -186,10 +187,10 @@ const Login = () => {
         navigate(redirectPath);
         setShowModal(false);
       }, 1500);
-      
+
     } catch (error) {
       let message = "Error al conectar con el servidor. Intenta más tarde.";
-      
+
       if (error.code === 'ECONNABORTED') {
         message = "Tiempo de espera agotado. Verifica tu conexión.";
       } else if (error.response) {
@@ -197,7 +198,7 @@ const Login = () => {
       } else if (error.request) {
         message = "No hay respuesta del servidor. Verifica tu conexión.";
       }
-      
+
       showAlert("danger", "Error de autenticación", message);
     } finally {
       setLoading(false);
@@ -234,10 +235,10 @@ const Login = () => {
       {isAuthenticated ? (
         <>
           <CartBtn />
-          
+
           {userRole === 'admin' && (
-            <Button 
-              variant="outline-warning" 
+            <Button
+              variant="outline-warning"
               onClick={() => navigate('/admin')}
               className="d-flex align-items-center"
             >
@@ -245,10 +246,10 @@ const Login = () => {
               <span>Admin</span>
             </Button>
           )}
-          
+
           <Dropdown show={showCompras} onToggle={toggleCompras}>
-            <Dropdown.Toggle 
-              variant="outline-primary" 
+            <Dropdown.Toggle
+              variant="outline-primary"
               className="d-flex align-items-center position-relative"
             >
               <FaUserCircle className="me-2" size={20} />
@@ -259,13 +260,13 @@ const Login = () => {
                 </Badge>
               )}
             </Dropdown.Toggle>
-            
+
             <Dropdown.Menu className="p-3" style={{ minWidth: '300px' }}>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <h6 className="mb-0 fw-bold">Historial de Compras</h6>
                 <FaShoppingBag className="text-primary" />
               </div>
-              
+
               {showCompras && (
                 <>
                   {loadingCompras ? (
@@ -280,7 +281,7 @@ const Login = () => {
                         <div className="text-end">Total</div>
                         <div className="text-end" style={{ width: '80px' }}>Fecha</div>
                       </div>
-                      
+
                       {compras.slice(0, 5).map((compra, index) => (
                         <div key={index} className="d-flex mb-2">
                           <div className="flex-grow-1">{compra.metodo_pago || 'No especificado'}</div>
@@ -290,7 +291,7 @@ const Login = () => {
                           </div>
                         </div>
                       ))}
-                      
+
                       {compras.length > 5 && (
                         <div className="text-center small mt-2">
                           <Button variant="link" size="sm" onClick={() => navigate('/historial')}>
@@ -304,13 +305,13 @@ const Login = () => {
                   )}
                 </>
               )}
-              
+
               <Dropdown.Divider />
-              
+
               <div className="d-grid">
-                <Button 
-                  variant="outline-danger" 
-                  size="sm" 
+                <Button
+                  variant="outline-danger"
+                  size="sm"
                   onClick={handleLogout}
                   className="d-flex align-items-center justify-content-center"
                 >
@@ -322,8 +323,8 @@ const Login = () => {
           </Dropdown>
         </>
       ) : (
-        <Button 
-          variant="outline-primary" 
+        <Button
+          variant="outline-primary"
           onClick={() => {
             setShowModal(true);
             setValidated(false);
@@ -337,8 +338,8 @@ const Login = () => {
       )}
 
       {/* Modal de Login */}
-      <Modal 
-        show={showModal} 
+      <Modal
+        show={showModal}
         onHide={() => {
           setShowModal(false);
           setAlert(null);
@@ -352,13 +353,13 @@ const Login = () => {
             <p className="text-muted small">Ingresa tus credenciales</p>
           </Modal.Title>
         </Modal.Header>
-        
+
         <Modal.Body className="pt-0">
           {alert && (
-            <Alert 
-              variant={alert.type} 
+            <Alert
+              variant={alert.type}
               className="d-flex align-items-center"
-              onClose={() => setAlert(null)} 
+              onClose={() => setAlert(null)}
               dismissible
             >
               {alertIcons[alert.type]}
@@ -368,7 +369,7 @@ const Login = () => {
               </div>
             </Alert>
           )}
-          
+
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <FloatingLabel controlId="floatingEmail" label="Correo Electrónico" className="mb-3">
               <Form.Control
@@ -386,7 +387,7 @@ const Login = () => {
                 <FaEnvelope />
               </div>
             </FloatingLabel>
-            
+
             <FloatingLabel controlId="floatingPassword" label="Contraseña" className="mb-4">
               <Form.Control
                 type="password"
@@ -404,10 +405,10 @@ const Login = () => {
                 <FaLock />
               </div>
             </FloatingLabel>
-            
-            <Button 
-              type="submit" 
-              variant="primary" 
+
+            <Button
+              type="submit"
+              variant="primary"
               className="w-100 py-2 fw-bold"
               disabled={loading}
             >
@@ -429,10 +430,10 @@ const Login = () => {
           <div className="text-center mt-3">
             <p className="small text-muted">
               ¿No tienes una cuenta?{' '}
-              <Button 
-                variant="link" 
-                size="sm" 
-                className="p-0 align-baseline text-primary" 
+              <Button
+                variant="link"
+                size="sm"
+                className="p-0 align-baseline text-primary"
                 onClick={handleNavigateToSignup}
                 style={{ textDecoration: 'none' }}
                 onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
