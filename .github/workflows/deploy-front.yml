@@ -20,13 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./frontend
 
       - name: Build project
         run: npm run build
+        working-directory: ./frontend
 
       - name: Upload build folder
         uses: azure/webapps-deploy@v2
         with:
           app-name: "sichf"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONT }}
-          package: "build"
+          package: "./frontend/build"
