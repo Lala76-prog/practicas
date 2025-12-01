@@ -1,0 +1,213 @@
+{
+  "info": {
+    "_postman_id": "d3c71f25-4773-4b07-8f0f-f88f6fedb033",
+    "name": "API Calzado - NodeJS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"correo\": \"usuario@example.com\",\n    \"password\": \"123456\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Calzado",
+      "item": [
+        {
+          "name": "Get All Calzado",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/calzado"
+          }
+        },
+        {
+          "name": "Create Calzado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/calzado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Bota trekking\",\n  \"talla\": 42\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Calzado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/calzado/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Bota trekking PRO\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Calzado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/calzado/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carrito",
+      "item": [
+        {
+          "name": "Get Carrito por Usuario",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/carrito/1"
+          }
+        },
+        {
+          "name": "Agregar al Carrito",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/carrito",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_usuario\": 1,\n  \"id_info_calzado\": 4,\n  \"cantidad\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar del Carrito",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/carrito/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Get Categorías",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/categoria"
+          }
+        },
+        {
+          "name": "Crear Categoría",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/categoria",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Niños\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar Categoría",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/categoria/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Mujer\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Categoría",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/categoria/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Info Calzado",
+      "item": [
+        {
+          "name": "Get Info Calzado",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/info_calzado"
+          }
+        },
+        {
+          "name": "Get Info by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/info_calzado/1"
+          }
+        },
+        {
+          "name": "Crear Info Calzado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/info_calzado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tenis Adidas\",\n  \"categoria\": \"Hombre\",\n  \"precio_unitario\": 189000,\n  \"material\": \"Cuero\",\n  \"color\": \"Negro\",\n  \"talla\": 42\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar Info Calzado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/info_calzado/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precio_unitario\": 200000\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar Info Calzado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/info_calzado/1"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
