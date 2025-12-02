@@ -45,4 +45,4 @@ jobs:
         with:
           app-name: "sichf"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONT }}
-          package: "./frontend/build"
+          package: "./frontend"
