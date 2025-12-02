@@ -10,25 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Descargar el código
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Setear Node 20 (igual que el App Service)
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      # 3. Instalar dependencias del frontend
       - name: Install dependencies
         run: npm install --legacy-peer-deps
         working-directory: ./frontend
 
+      # 4. Crear el archivo .env para React ANTES del build
+      - name: Create env file
+        run: |
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > ./frontend/.env
+
+      # 5. Desactivar modo CI (evita que warnings rompan el build)
       - name: Disable CI strict mode
         run: echo "CI=false" >> $GITHUB_ENV
 
+      # 6. Build del proyecto
       - name: Build project
         run: npm run build
         working-directory: ./frontend
 
+      # 7. Desplegar el build a Azure App Service
       - name: Upload build folder
         uses: azure/webapps-deploy@v2
         with:
